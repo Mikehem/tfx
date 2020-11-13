@@ -1,9 +1,12 @@
 # Current Version(Still in Development)
 
 ## Major Features and Improvements
+
 *   Added a skeleton of CLI support for Kubeflow V2 runner, and implemented
     support for pipeline operations.
 *   Added an experimental template to use with Kubeflow V2 runner.
+*   Supported output examples artifact for BulkInferrer which can be used to
+    link with downstream training.
 
 ## Breaking changes
 
