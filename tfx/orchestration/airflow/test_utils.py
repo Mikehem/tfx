@@ -29,6 +29,9 @@ _MYSQL_POLLING_INTERVAL_SEC = 2
 _MYSQL_POLLING_MAX_ATTEMPTS = 60
 _MYSQL_PORT = '3306/tcp'
 
+# Set longer timeout when pull/deleting an image. Default timeout is 60 seconds.
+_DOCKER_TIMEOUT_SECONDS = 60 * 5
+
 
 def create_mysql_container(container_name: Text) -> int:
   """Create a mysql docker container and returns port to it.
@@ -46,7 +49,7 @@ def create_mysql_container(container_name: Text) -> int:
                     failed to run initialization sqls.
   """
 
-  client = docker.from_env()
+  client = docker.from_env(timeout=_DOCKER_TIMEOUT_SECONDS)
   container = client.containers.run(
       'mysql:5.7',
       name=container_name,
@@ -108,7 +111,7 @@ def delete_mysql_container(container_name: Text):
   Args:
       container_name: A name of the new container.
   """
-  client = docker.from_env()
+  client = docker.from_env(timeout=_DOCKER_TIMEOUT_SECONDS)
   container = client.containers.get(container_name)
   container.remove(force=True)
   client.close()
