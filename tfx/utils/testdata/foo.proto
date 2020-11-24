@@ -26,3 +26,10 @@ message Foo {
 message Foo2 {
   int64 value = 1;
 }
+
+message TestProto {
+  string option1 = 1;
+  int32 option2 = 2;
+  double option3 = 3;
+  repeated int32 integer_list = 4;
+}
