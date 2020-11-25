@@ -19,8 +19,17 @@ from tfx.orchestration.kubeflow.v2 import pipeline_builder
 from tfx.orchestration.kubeflow.v2 import test_utils
 from tfx.orchestration.kubeflow.v2.proto import pipeline_pb2
 
+_VALID_NAME = 'this-name-is-good'
+_BAD_NAME = 'This  is  not  a GOOD name.'
+_BAD_NAME_SANITIZED = 'this-is-not-a-good-name'
+
 
 class PipelineBuilderTest(tf.test.TestCase):
+
+  def testSanitize(self):
+    self.assertEqual(_VALID_NAME, pipeline_builder._sanitize_name(_VALID_NAME))
+    self.assertEqual(_BAD_NAME_SANITIZED,
+                     pipeline_builder._sanitize_name(_BAD_NAME))
 
   def testBuildTwoStepPipeline(self):
     my_builder = pipeline_builder.PipelineBuilder(
@@ -87,8 +96,7 @@ class PipelineBuilderTest(tf.test.TestCase):
     self.assertProtoEquals(
         test_utils.get_proto_from_test_data(
             'expected_consume_primitive_artifacts_by_value_pipeline.pbtxt',
-            pipeline_pb2.PipelineSpec()),
-        actual_pipeline_spec)
+            pipeline_pb2.PipelineSpec()), actual_pipeline_spec)
 
   def testBuildPipelineWithRuntimeParameter(self):
     my_builder = pipeline_builder.PipelineBuilder(
@@ -98,8 +106,7 @@ class PipelineBuilderTest(tf.test.TestCase):
     self.assertProtoEquals(
         test_utils.get_proto_from_test_data(
             'expected_pipeline_with_runtime_parameter.pbtxt',
-            pipeline_pb2.PipelineSpec()),
-        actual_pipeline_spec)
+            pipeline_pb2.PipelineSpec()), actual_pipeline_spec)
 
   def testKubeflowArtifactsTwoStepPipeline(self):
     my_builder = pipeline_builder.PipelineBuilder(

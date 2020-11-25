@@ -13,14 +13,33 @@
 # limitations under the License.
 """Builder for Kubeflow pipelines level proto spec."""
 
+import re
 from typing import Any, Dict, List, Optional, Text
 
+from absl import logging
 from tfx.orchestration import data_types
 from tfx.orchestration import pipeline
 from tfx.orchestration.kubeflow.v2 import compiler_utils
 from tfx.orchestration.kubeflow.v2 import parameter_utils
 from tfx.orchestration.kubeflow.v2 import step_builder
 from tfx.orchestration.kubeflow.v2.proto import pipeline_pb2
+
+_LEGAL_NAME_PATTERN = re.compile(r'[a-z0-9][a-z0-9-]{0,128}')
+
+
+def _sanitize_name(name: Text) -> Text:
+  """Sanitizes user-provided pipeline name."""
+  if _LEGAL_NAME_PATTERN.fullmatch(name):
+    return name
+
+  new_name = re.sub(
+      '-+',
+      '-',
+      re.sub('[^-0-9a-z]+', '-', name.lower())).lstrip('-').rstrip('-')
+
+  logging.warning('User provided pipeline name %s is illegal, replaced'
+                  'with %s', name, new_name)
+  return new_name
 
 
 class RuntimeConfigBuilder(object):
@@ -86,7 +105,7 @@ class PipelineBuilder(object):
 
     deployment_config = pipeline_pb2.PipelineDeploymentConfig()
     pipeline_info = pipeline_pb2.PipelineInfo(
-        name=self._pipeline_info.pipeline_name)
+        name=_sanitize_name(self._pipeline_info.pipeline_name))
 
     tasks = []
     # Map from (producer component id, output key) to (new producer component
