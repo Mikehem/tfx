@@ -19,7 +19,10 @@ from __future__ import division
 from __future__ import print_function
 
 import datetime
-import os
+import os, sys
+HOME = "/home/MD00560695/workdir/tfx"
+sys.path.append(HOME)
+
 from typing import List, Text
 import tensorflow_model_analysis as tfma
 from tfx.components import CsvExampleGen
@@ -48,7 +51,8 @@ _pipeline_name = 'chicago_taxi_simple'
 
 # This example assumes that the taxi data is stored in ~/taxi/data and the
 # taxi utility function is in ~/taxi.  Feel free to customize this as needed.
-_taxi_root = os.path.join(os.environ['HOME'], 'taxi')
+# os.environ['HOME']
+_taxi_root = os.path.join(HOME, 'taxi')
 _data_root = os.path.join(_taxi_root, 'data', 'simple')
 # Python module file to inject customized logic into the TFX components. The
 # Transform and Trainer both require user-defined functions to run successfully.
@@ -60,7 +64,7 @@ _serving_model_dir = os.path.join(_taxi_root, 'serving_model', _pipeline_name)
 # Directory and data locations.  This example assumes all of the chicago taxi
 # example code and metadata library is relative to $HOME, but you can store
 # these files anywhere on your local filesystem.
-_tfx_root = os.path.join(os.environ['HOME'], 'tfx')
+_tfx_root = os.path.join(HOME, 'tfx')
 _pipeline_root = os.path.join(_tfx_root, 'pipelines', _pipeline_name)
 # Sqlite ML-metadata db path.
 _metadata_path = os.path.join(_tfx_root, 'metadata', _pipeline_name,
@@ -86,10 +90,11 @@ def _create_pipeline(pipeline_name: Text, pipeline_root: Text, data_root: Text,
                      metadata_path: Text,
                      beam_pipeline_args: List[Text]) -> pipeline.Pipeline:
   """Implements the chicago taxi pipeline with TFX."""
-  examples = external_input(data_root)
+  #examples = external_input(data_root)
 
   # Brings data into the pipeline or otherwise joins/converts training data.
-  example_gen = CsvExampleGen(input=examples)
+  #example_gen = CsvExampleGen(input=examples)
+  example_gen = CsvExampleGen(input_base=data_root)
 
   # Computes statistics over data for visualization and example validation.
   statistics_gen = StatisticsGen(examples=example_gen.outputs['examples'])

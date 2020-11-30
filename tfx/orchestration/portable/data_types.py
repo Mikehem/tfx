@@ -12,12 +12,16 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 """Data types shared for orchestration."""
+import os, sys
+HOME = "/home/MD00560695/workdir/tfx"
+sys.path.append(HOME)
+
 from typing import Any, Dict, List
 
 import attr
 from tfx import types
 from tfx.orchestration import data_types_utils
-from tfx.proto.orchestration import execution_invocation_pb2
+from tfx.proto.orchestration import executor_invocation_pb2 #execution_invocation_pb2
 from tfx.proto.orchestration import pipeline_pb2
 
 
@@ -57,8 +61,8 @@ class ExecutionInfo:
   pipeline_run_id = attr.ib(type=str, default=None)
   # LINT.ThenChange(../../proto/orchestration/execution_invocation.proto)
 
-  def to_proto(self) -> execution_invocation_pb2.ExecutionInvocation:
-    return execution_invocation_pb2.ExecutionInvocation(
+  def to_proto(self) -> executor_invocation_pb2.ExecutorInvocation: #execution_invocation_pb2.ExecutionInvocation:
+    return executor_invocation_pb2.ExecutorInvocation( #execution_invocation_pb2.ExecutionInvocation(
         execution_id=self.execution_id,
         input_dict=data_types_utils.build_artifact_struct_dict(self.input_dict),
         output_dict=data_types_utils.build_artifact_struct_dict(
@@ -74,7 +78,7 @@ class ExecutionInfo:
 
   @classmethod
   def from_proto(
-      cls, execution_invocation: execution_invocation_pb2.ExecutionInvocation
+      cls, execution_invocation: executor_invocation_pb2.ExecutorInvocation #execution_invocation_pb2.ExecutionInvocation
   ) -> 'ExecutionInfo':
     return cls(
         execution_id=execution_invocation.execution_id,
