@@ -16,7 +16,10 @@
 
 With the native TF2 code path being exercised.
 """
-import os
+import os, sys
+
+sys.path.append("/home/MD00560695/workdir/tfx")
+os.environ["CUDA_VISIBLE_DEVICES"]="-1" 
 
 import tensorflow as tf
 

@@ -18,6 +18,11 @@ from __future__ import absolute_import
 from __future__ import division
 from __future__ import print_function
 
+import os, sys
+
+sys.path.append("/home/MD00560695/workdir/tfx")
+os.environ["CUDA_VISIBLE_DEVICES"]="-1" 
+
 import tensorflow as tf
 from tfx.components.model_validator import component
 from tfx.types import channel_utils
